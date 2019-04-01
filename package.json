@@ -1,0 +1,29 @@
+{
+  "name": "silent-chaos-server",
+  "version": "1.0.0",
+  "description": "Back-end server for a restaurant app.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www",
+    "start-n": "nodemon ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mindo21/silent-chaos-server.git"
+  },
+  "author": "Matus Minarovic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mindo21/silent-chaos-server/issues"
+  },
+  "homepage": "https://github.com/Mindo21/silent-chaos-server#readme",
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.0"
+  }
+}
