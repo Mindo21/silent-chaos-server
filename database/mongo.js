@@ -1,5 +1,6 @@
 const assert = require('assert');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 const config = require('../config.js');
 const url = config.MONGO_URL;
 const dbName = config.DB_NAME;
@@ -23,30 +24,45 @@ const insertDocuments = function(db) {
     });
 }
 
-function connectToMongo() {
+async function connectToMongo() {
     console.log("Connecting to mongo...");
 
-    client.connect(function(err) {
-        assert.equal(null, err);
-        
-        console.log("Connected to mongo!");
-
-        db = client.db(dbName);
-    });
-
+    await client.connect();
+    console.log("Connected to mongo!");
+    db = client.db(dbName);
     isConnected = true;
 }
 
-function closeConnection() {
-    client.close();
+async function closeConnection() {
+    await client.close();
     isConnected = false;
 }
 
+async function findOneById(idName, collectionName) {
+    // Validating connection
+    if (!isConnected) {
+        console.log("Error: Mongo operation before establishing connection!");
+        return null;
+    }
+
+    let result = null;
+    const id = new ObjectId(idName);
+    const collection = db.collection(collectionName);
+    const query = { '_id' : id };
+
+    try {
+        result = await collection.findOne(query);
+    } catch(err) {
+        console.error(err);
+    } finally {
+        return result;
+    }
+}
 
 
 module.exports = {
     connectToMongo: connectToMongo,
     closeConnection: closeConnection,
-    db: db,
+    findOneById: findOneById,
     isConnected: isConnected,
 };

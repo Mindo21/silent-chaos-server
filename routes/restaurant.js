@@ -9,12 +9,22 @@ router.get('/', function(req, res) {
 });
 
 // call '/restaurant/:id/categories'
-router.get('/:id/categories', function(req, res) {
+router.get('/:id/categories', async function(req, res) {
     const id = req.params.id;
-    mongo.connectToMongo();
+    await mongo.connectToMongo();
 
-    mongo.closeConnection();
-    res.render('index', { title: '/restaurant/' + id + '/categories' });
+    const restaurant = await mongo.findOneById(id, 'restaurant');
+    
+    await mongo.closeConnection();
+
+    // Validating the restaurant id
+    if (restaurant) {
+        console.log('found restaurant: ' + JSON.stringify(restaurant));
+        res.send(restaurant);
+    } else {
+        console.log('there is no restaurant with such id: ' + id);
+        res.status(404).send();
+    }
 });
 
 module.exports = router;
