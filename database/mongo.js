@@ -41,7 +41,7 @@ async function closeConnection() {
 async function findOneById(idName, collectionName) {
     // Validating connection
     if (!isConnected) {
-        console.log("Error: Mongo operation before establishing connection!");
+        console.error("Error: Mongo operation before establishing connection!");
         return null;
     }
 
@@ -59,10 +59,54 @@ async function findOneById(idName, collectionName) {
     }
 }
 
+async function findAllById(idName, collectionName) {
+    // Validating connection
+    if (!isConnected) {
+        console.error("Error: Mongo operation before establishing connection!");
+        return null;
+    }
+
+    let result = null;
+    const id = new ObjectId(idName);
+    const collection = db.collection(collectionName);
+    const query = { '_id' : id };
+
+    try {
+        result = await collection.find(query).toArray();
+    } catch(err) {
+        console.error(err);
+    } finally {
+        return result;
+    }
+}
+
+async function findAllByRestaurantId(restaurantIdName, collectionName) {
+    // Validating connection
+    if (!isConnected) {
+        console.error("Error: Mongo operation before establishing connection!");
+        return null;
+    }
+
+    let result = null;
+    const restaurantId = new ObjectId(restaurantIdName);
+    const collection = db.collection(collectionName);
+    const query = { 'restaurant_id' : restaurantId };
+
+    try {
+        result = await collection.find(query).toArray();
+    } catch(err) {
+        console.error(err);
+    } finally {
+        return result;
+    }
+}
+
 
 module.exports = {
     connectToMongo: connectToMongo,
     closeConnection: closeConnection,
     findOneById: findOneById,
+    findAllById: findAllById,
+    findAllByRestaurantId: findAllByRestaurantId,
     isConnected: isConnected,
 };
