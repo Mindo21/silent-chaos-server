@@ -28,11 +28,10 @@ function connectToMongo() {
 
     client.connect(function(err) {
         assert.equal(null, err);
+        
         console.log("Connected to mongo!");
 
         db = client.db(dbName);
-
-        //insertDocuments(db);
     });
 
     isConnected = true;
