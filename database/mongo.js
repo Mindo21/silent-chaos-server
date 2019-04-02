@@ -6,7 +6,7 @@ const url = config.MONGO_URL;
 const dbName = config.DB_NAME;
 
 let db;
-let isConnected = false;
+let connected = false;
 
 const client = new MongoClient(url, { useNewUrlParser: true });
 
@@ -30,17 +30,17 @@ async function connectToMongo() {
     await client.connect();
     console.log("Connected to mongo!");
     db = client.db(dbName);
-    isConnected = true;
+    connected = true;
 }
 
 async function closeConnection() {
     await client.close();
-    isConnected = false;
+    connected = false;
 }
 
 async function findOneById(idName, collectionName) {
     // Validating connection
-    if (!isConnected) {
+    if (!connected) {
         console.error("Error: Mongo operation before establishing connection!");
         return null;
     }
@@ -61,7 +61,7 @@ async function findOneById(idName, collectionName) {
 
 async function findAllById(idName, collectionName) {
     // Validating connection
-    if (!isConnected) {
+    if (!connected) {
         console.error("Error: Mongo operation before establishing connection!");
         return null;
     }
@@ -82,7 +82,7 @@ async function findAllById(idName, collectionName) {
 
 async function findAllByRestaurantId(restaurantIdName, collectionName) {
     // Validating connection
-    if (!isConnected) {
+    if (!connected) {
         console.error("Error: Mongo operation before establishing connection!");
         return null;
     }
@@ -101,6 +101,9 @@ async function findAllByRestaurantId(restaurantIdName, collectionName) {
     }
 }
 
+function isConnected() {
+    return connected;
+}
 
 module.exports = {
     connectToMongo: connectToMongo,

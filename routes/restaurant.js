@@ -17,9 +17,11 @@ router.get('/:id/categories', getCategoriesByRestaurantId);
 async function getRestaurantById(req, res) {
     const id = req.params.id;
 
-    await mongo.connectToMongo();
+    // Establish connection
+    if (!mongo.isConnected())
+        await mongo.connectToMongo();
+
     const restaurant = await mongo.findOneById(id, 'restaurant');
-    await mongo.closeConnection();
 
     // Validating the restaurant id
     if (restaurant) {
@@ -34,13 +36,15 @@ async function getRestaurantById(req, res) {
 async function getCategoriesByRestaurantId(req, res) {
     const id = req.params.id;
 
-    await mongo.connectToMongo();
+    // Establish connection
+    if (!mongo.isConnected())
+        await mongo.connectToMongo();
+
     const restaurant = await mongo.findOneById(id, 'restaurant');
 
     // Validating the restaurant id
     if (restaurant) {
         const categories = await mongo.findAllByRestaurantId(id, 'category');
-        await mongo.closeConnection();
         if (categories) {
             console.log('found restaurant: ' + JSON.stringify(restaurant));
             console.log('found categories: ' + categories.toString());
@@ -51,7 +55,6 @@ async function getCategoriesByRestaurantId(req, res) {
         }
     } else {
         console.log('there is no restaurant with this id: ' + id);
-        await mongo.closeConnection();
         res.status(404).send();
     }
 }
