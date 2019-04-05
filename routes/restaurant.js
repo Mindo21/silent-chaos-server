@@ -89,7 +89,7 @@ async function insertNewRestaurant(req, res) {
 
     console.log(JSON.stringify(restaurant));
 
-    const result = await mongo.insertRestaurant(restaurant);
+    const result = await mongo.insertOne(restaurant, 'restaurant');
 
     console.log(result);
 
