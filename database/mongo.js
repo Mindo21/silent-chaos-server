@@ -10,20 +10,6 @@ let connected = false;
 
 const client = new MongoClient(url, { useNewUrlParser: true });
 
-const insertDocuments = function(db) {
-    // Get the documents collection
-    const collection = db.collection('restaurant');
-    // Insert some documents
-    collection.insertMany([
-      {x : 1}, {y : 2}, {z : 3}
-    ], function(err, result) {
-      assert.equal(err, null);
-      assert.equal(3, result.result.n);
-      assert.equal(3, result.ops.length);
-      console.log("Inserted 3 documents into the collection");
-    });
-}
-
 async function connectToMongo() {
     console.log("Connecting to mongo...");
 
@@ -38,12 +24,20 @@ async function closeConnection() {
     connected = false;
 }
 
+async function makeSureMongoIsConnected() {
+    if (!connected)
+        // Establish connection
+        await connectToMongo();
+}
+
+function isConnected() {
+    return connected;
+}
+
+// ---------------------------- FIND ------------------------------
+
 async function findOneById(idName, collectionName) {
-    // Validating connection
-    if (!connected) {
-        console.error("Error: Mongo operation before establishing connection!");
-        return null;
-    }
+    makeSureMongoIsConnected();
 
     let result = null;
     const id = new ObjectId(idName);
@@ -60,11 +54,7 @@ async function findOneById(idName, collectionName) {
 }
 
 async function findAllById(idName, collectionName) {
-    // Validating connection
-    if (!connected) {
-        console.error("Error: Mongo operation before establishing connection!");
-        return null;
-    }
+    makeSureMongoIsConnected();
 
     let result = null;
     const id = new ObjectId(idName);
@@ -81,11 +71,7 @@ async function findAllById(idName, collectionName) {
 }
 
 async function findAllByRestaurantId(restaurantIdName, collectionName) {
-    // Validating connection
-    if (!connected) {
-        console.error("Error: Mongo operation before establishing connection!");
-        return null;
-    }
+    makeSureMongoIsConnected();
 
     let result = null;
     const restaurantId = new ObjectId(restaurantIdName);
@@ -101,15 +87,28 @@ async function findAllByRestaurantId(restaurantIdName, collectionName) {
     }
 }
 
-function isConnected() {
-    return connected;
+// --------------------------- INSERT -----------------------------
+
+async function insertOne(doc, collectionName) {
+    makeSureMongoIsConnected();
+
+    let result = null;
+    const collection = db.collection(collectionName);
+
+    try {
+        result = await collection.insertOne(doc);
+        console.log("One " + collectionName + " inserted into database.");
+    } catch(err) {
+        console.error(err);
+    } finally {
+        return result;
+    }
 }
 
 module.exports = {
-    connectToMongo: connectToMongo,
-    closeConnection: closeConnection,
+    isConnected: isConnected,
     findOneById: findOneById,
     findAllById: findAllById,
     findAllByRestaurantId: findAllByRestaurantId,
-    isConnected: isConnected,
+    insertOne: insertOne,
 };
