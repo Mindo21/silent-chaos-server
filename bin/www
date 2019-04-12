@@ -81,12 +81,13 @@ io.on('connection', function(socket) {
   }
 
   function addToOrder(data) {
-    console.log(data)
-    // data.forEach((element) => {
-    //   if (!order.foods.find((e) => { return e.id == element.id; })) {
-    //     order.foods.push(element);
-    //   }
-    // });
+    parsedData = JSON.parse(data);
+    console.log(parsedData);
+    parsedData.forEach((element) => {
+      if (!order.foods.find((e) => { return e.id == element.id; })) {
+        order.foods.push(element);
+      }
+    });
     
     console.log("Ordered foods after add request: ", JSON.stringify(order.foods));
     io.emit('output', order);
