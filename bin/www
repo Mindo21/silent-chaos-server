@@ -47,7 +47,7 @@ io.on('connection', function(socket) {
     status: "NOT_STARTED"
   };
   // orders.push(order);
-  socket.emit('output', order);
+  io.emit('output', order);
 
 
   socket.on('test', function(data) {
