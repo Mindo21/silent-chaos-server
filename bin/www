@@ -44,8 +44,9 @@ io.on('connection', function(socket) {
   console.log('made socket connection', socket.id);
   if (!order) {
     order = {
-      wsId: socket.id,
-      status: "NOT_STARTED"
+      orderId: socket.id,
+      status: "NOT_STARTED",
+      foodOrder: []
     };
   }
   // orders.push(order);
@@ -59,7 +60,7 @@ io.on('connection', function(socket) {
 
   socket.on('START', startOrder);
 
-  // socket.on('ORDER', addToOrder);
+  socket.on('ORDER', addToOrder);
 
   // socket.on('START_PAY', startPay);
 
@@ -71,6 +72,11 @@ io.on('connection', function(socket) {
 
   function startOrder(data) {
     order.status = "RUNNING";
+    io.emit('output', order);
+  }
+
+  function addToOrder(data) {
+    console.log(data);
     io.emit('output', order);
   }
 });
