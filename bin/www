@@ -99,7 +99,9 @@ io.on('connection', function(socket) {
   }
 
   function pay(data) {
-    data.forEach((element) => {
+    parsedData = JSON.parse(data);
+    console.log(parsedData);
+    parsedData.forEach((element) => {
       let foodToReplace = order.orders.find((e) => { return e.id == element.id; });
       
       if (foodToReplace) {
