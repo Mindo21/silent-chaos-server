@@ -37,13 +37,44 @@ server.on('listening', onListening);
 
 const io = socket(server);
 
+// let orders = [];
+let order;
+
 io.on('connection', function(socket) {
   console.log('made socket connection', socket.id);
+  order = {
+    wsId: socket.id,
+    status: "NOT_STARTED"
+  };
+  // orders.push(order);
+  socket.emit('output', order);
+
 
   socket.on('test', function(data) {
       console.log('got a socket emit test: ', data.message);
       io.emit('test', data);
   });
+
+  socket.on('START', startOrder);
+
+  // socket.on('ORDER', addToOrder);
+
+  // socket.on('START_PAY', startPay);
+
+  // socket.on('PAY', pay);
+
+  // socket.on('CLOSE_PAY', closePay);
+
+  // socket.on('CLOSE', closeOrder);
+
+  function startOrder(data) {
+    // let order = orders.find((order) => {
+    //   order.
+    // });
+    // socket.id;
+    order.status = "STARTED";
+    io.emit('output', order);
+  }
 });
 
 /**
