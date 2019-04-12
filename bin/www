@@ -39,9 +39,12 @@ const io = socket(server);
 
 // let orders = [];
 let order = null;
+let connectedSocketsCount = 0;
 
 io.on('connection', function(socket) {
-  console.log('made socket connection', socket.id);
+  console.log('made socket connection: ', socket.id);
+  connectedSocketsCount++;
+  console.log('connected sockets: ', connectedSocketsCount);
   if (!order) {
     order = {
       orderId: socket.id,
@@ -57,6 +60,12 @@ io.on('connection', function(socket) {
   socket.on('test', function(data) {
       console.log('got a socket emit test: ', data.message);
       io.emit('test', data);
+  });
+
+  socket.on('disconnect', function() {
+    console.log('disconnected socket: ', socket.id);
+    connectedSocketsCount--;
+    console.log('connected sockets: ', connectedSocketsCount);
   });
 
   socket.on('START', startOrder);
@@ -111,6 +120,7 @@ io.on('connection', function(socket) {
 
   function closeOrder(data) {
     order.status = "NOT_STARTED";
+    order.foods = [];
     io.emit('output', order);
   }
 });
