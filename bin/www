@@ -38,16 +38,18 @@ server.on('listening', onListening);
 const io = socket(server);
 
 // let orders = [];
-let order;
+let order = null;
 
 io.on('connection', function(socket) {
   console.log('made socket connection', socket.id);
-  order = {
-    wsId: socket.id,
-    status: "NOT_STARTED"
-  };
+  if (!order) {
+    order = {
+      wsId: socket.id,
+      status: "NOT_STARTED"
+    };
+  }
   // orders.push(order);
-  io.emit('output', order);
+  socket.emit('output', order);
 
 
   socket.on('test', function(data) {
@@ -68,10 +70,6 @@ io.on('connection', function(socket) {
   // socket.on('CLOSE', closeOrder);
 
   function startOrder(data) {
-    // let order = orders.find((order) => {
-    //   order.
-    // });
-    // socket.id;
     order.status = "RUNNING";
     io.emit('output', order);
   }
