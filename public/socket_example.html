@@ -33,9 +33,10 @@
         });
 
         socket.on('chat', (data) => {
+          console.log('socket message received: ', data);
           let li = document.createElement("li");
           li.appendChild(document.createTextNode(data.message));
-          ul.appendChild(li);
+          messages.appendChild(li);
         });
     </script>
   </body>
