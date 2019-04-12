@@ -41,7 +41,7 @@ io.on('connection', function(socket) {
   console.log('made socket connection', socket.id);
 
   socket.on('test', function(data) {
-      console.log('got a socket emit chat: ', data.message);
+      console.log('got a socket emit test: ', data.message);
       io.emit('test', data);
   });
 });
