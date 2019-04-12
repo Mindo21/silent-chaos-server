@@ -27,12 +27,12 @@
 
         btnSend.addEventListener('click', () => {
           console.log('button clicked: ', inputText.value);
-          socket.emit('chat', {
+          socket.emit('test', {
             message: inputText.value
           });
         });
 
-        socket.on('chat', (data) => {
+        socket.on('test', (data) => {
           console.log('socket message received: ', data);
           let li = document.createElement("li");
           li.appendChild(document.createTextNode(data.message));
