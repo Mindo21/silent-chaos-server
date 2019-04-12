@@ -27,15 +27,13 @@
 
         btnSend.addEventListener('click', () => {
           console.log('button clicked: ', inputText.value);
-          socket.emit('test', {
-            message: inputText.value
-          });
+          socket.emit('ORDER', [{"id":"testid","food":{"name":"Jogurt","price":50.0,"photoUrl":"gf"}}]);
         });
 
-        socket.on('test', (data) => {
+        socket.on('output', (data) => {
           console.log('socket message received: ', data);
           let li = document.createElement("li");
-          li.appendChild(document.createTextNode(data.message));
+          li.appendChild(document.createTextNode(JSON.stringify(data)));
           messages.appendChild(li);
         });
     </script>

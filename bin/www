@@ -46,7 +46,7 @@ io.on('connection', function(socket) {
     order = {
       orderId: socket.id,
       status: "NOT_STARTED",
-      foodOrder: []
+      foods: {}
     };
   }
   // orders.push(order);
@@ -76,7 +76,11 @@ io.on('connection', function(socket) {
   }
 
   function addToOrder(data) {
-    console.log(data);
+    data.forEach((element) => {
+      order.foods[element.id] = element.food;
+    });
+    
+    console.log("Ordered foods after add request: ", JSON.stringify(order.foods));
     io.emit('output', order);
   }
 });
