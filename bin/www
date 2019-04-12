@@ -46,7 +46,8 @@ io.on('connection', function(socket) {
     order = {
       orderId: socket.id,
       status: "NOT_STARTED",
-      foods: {}
+      paying: false,
+      foods: []
     };
   }
   // orders.push(order);
@@ -59,16 +60,11 @@ io.on('connection', function(socket) {
   });
 
   socket.on('START', startOrder);
-
   socket.on('ORDER', addToOrder);
-
-  // socket.on('START_PAY', startPay);
-
-  // socket.on('PAY', pay);
-
-  // socket.on('CLOSE_PAY', closePay);
-
-  // socket.on('CLOSE', closeOrder);
+  socket.on('START_PAY', startPay);
+  socket.on('PAY', pay);
+  socket.on('CLOSE_PAY', closePay);
+  socket.on('CLOSE', closeOrder);
 
   function startOrder(data) {
     order.status = "RUNNING";
@@ -77,10 +73,44 @@ io.on('connection', function(socket) {
 
   function addToOrder(data) {
     data.forEach((element) => {
-      order.foods[element.id] = element.food;
+      if (!order.foods.find((e) => { return e.id == element.id; })) {
+        order.foods.push(element);
+      }
     });
     
     console.log("Ordered foods after add request: ", JSON.stringify(order.foods));
+    io.emit('output', order);
+  }
+
+  function startPay(data) {
+    order.paying = true;
+    io.emit('output', order);
+  }
+
+  function pay(data) {
+    data.forEach((element) => {
+      let foodToReplace = order.foods.find((e) => { return e.id == element.id; });
+      
+      if (foodToReplace) {
+        let index = order.foods.indexOf(foodToReplace);
+
+        if (index !== -1) {
+          order.foods[index] = element;
+        }
+      }
+    });
+    
+    console.log("Ordered foods after pay request: ", JSON.stringify(order.foods));
+    io.emit('output', order);
+  }
+
+  function closePay(data) {
+    order.paying = false;
+    io.emit('output', order);
+  }
+
+  function closeOrder(data) {
+    order.status = "NOT_STARTED";
     io.emit('output', order);
   }
 });

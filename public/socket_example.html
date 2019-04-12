@@ -15,21 +15,29 @@
   </head>
   <body>
     <ul id="messages"></ul>
-      <input id="m" autocomplete="off" /><button id="btnSend">Send</button>
+      <input id="m" autocomplete="off" />
+      <button id="btnOrder">ORDER</button>
+      <button id="btnPay">PAY</button>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script>
         var socket = io();
         const messages = document.getElementById('messages');
-        const btnSend = document.getElementById('btnSend');
+        const btnOrder = document.getElementById('btnOrder');
+        const btnPay = document.getElementById('btnPay');
         const inputText = document.getElementById('m');
 
 
-        btnSend.addEventListener('click', () => {
+        btnOrder.addEventListener('click', () => {
           console.log('button clicked: ', inputText.value);
           socket.emit('ORDER', [{"id":"testid","food":{"name":"Jogurt","price":50.0,"photoUrl":"gf"}}]);
         });
 
+        btnPay.addEventListener('click', () => {
+          console.log('button clicked: ', inputText.value);
+          socket.emit('PAY', [{"id":"testid","food":{"name":"Jogurt","price":50.0,"photoUrl":"gf"},"paidBy":"Matus"}]);
+        });
+        
         socket.on('output', (data) => {
           console.log('socket message received: ', data);
           let li = document.createElement("li");
